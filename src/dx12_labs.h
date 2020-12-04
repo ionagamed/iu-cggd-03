@@ -4,61 +4,55 @@
 #define UNICODE
 #endif
 
-#include <Windows.h>
-
-#include <wrl.h>
-
-#include <initguid.h>
-
-#include <dxgi1_4.h>
-#include "d3dx12.h"
-
 #include <D3Dcompiler.h>
 #include <DirectXMath.h>
-
-#include <iostream>
+#include <Windows.h>
+#include <dxgi1_4.h>
+#include <initguid.h>
+#include <wrl.h>
 
 #include <exception>
+#include <iostream>
+
+#include <d3d12.h>
+#include <string>
+#include "d3dx12.h"
 
 using namespace Microsoft::WRL;
 
 namespace DX
 {
-	class com_exception : public std::exception
-	{
-	public:
-		com_exception(HRESULT hr) : result(hr)
-		{
-			what_str = std::wstring(L"Failure with HRESULT of " +
-				std::to_wstring(static_cast<unsigned int>(result)) +
-				L"\n");
-		}
+    class com_exception : public std::exception
+    {
+    public:
+        com_exception(HRESULT hr) : result(hr)
+        {
+            what_str = std::wstring(L"Failure with HRESULT of " +
+                                    std::to_wstring(static_cast<unsigned int>(result)) +
+                                    L"\n");
+        }
 
-		const LPCWSTR get_wstring() const
-		{
-			return what_str.c_str();
-		}
+        const LPCWSTR get_wstring() const { return what_str.c_str(); }
 
+    private:
+        HRESULT result;
+        std::wstring what_str;
+    };
 
-	private:
-		HRESULT result;
-		std::wstring what_str;
-	};
-
-	inline void ThrowIfFailed(HRESULT hr)
-	{
-		if (FAILED(hr))
-		{
-			throw com_exception(hr);
-		}
-	}
-}
+    inline void ThrowIfFailed(HRESULT hr)
+    {
+        if (FAILED(hr))
+        {
+            throw com_exception(hr);
+        }
+    }
+} // namespace DX
 
 using namespace DX;
 using namespace DirectX;
 
 struct ColorVertex
 {
-	XMFLOAT3 position;
-	XMFLOAT4 color;
+    XMFLOAT3 position;
+    XMFLOAT4 color;
 };
